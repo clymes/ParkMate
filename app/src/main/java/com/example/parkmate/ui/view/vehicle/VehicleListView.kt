@@ -1,4 +1,4 @@
-package com.example.parkmate.ui.pages.vehicle
+package com.example.parkmate.ui.view.vehicle
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -10,8 +10,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview
-fun VehicleListPage() {
+fun VehicleListView() {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -36,6 +35,6 @@ fun VehicleListPage() {
 
 @Preview(showBackground = true)
 @Composable
-fun VehicleListPagePreview() {
-    VehicleListPage()
+fun VehicleListViewPreview() {
+    VehicleListView()
 }
