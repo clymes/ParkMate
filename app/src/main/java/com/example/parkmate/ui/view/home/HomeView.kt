@@ -38,11 +38,13 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview
-fun HomeView() {
+fun HomeView(
+    goToVehicleList: () -> Unit
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
+    // MENU LATERALE
     ModalNavigationDrawer(
         drawerState = drawerState,
         scrimColor = Color.Black.copy(alpha = 0.4f),
@@ -76,7 +78,7 @@ fun HomeView() {
                     NavigationDrawerItem(
                         label = { Text(text = "VEICOLI") },
                         selected = false,
-                        onClick = { /*TODO*/ },
+                        onClick = { goToVehicleList() },
                         shape = RectangleShape
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -104,6 +106,7 @@ fun HomeView() {
             }
         }
     ) {
+        // CONTENUTO PRINCIPALE
         Scaffold(
             modifier = Modifier
                 .fillMaxSize()
@@ -137,4 +140,12 @@ fun HomeView() {
             ) {}
         }
     }
+}
+
+@Composable
+@Preview
+fun HomeViewPreview() {
+    HomeView(
+        goToVehicleList = {}
+    )
 }
