@@ -78,7 +78,10 @@ fun HomeView(
                     NavigationDrawerItem(
                         label = { Text(text = "VEICOLI") },
                         selected = false,
-                        onClick = { goToVehicleList() },
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            goToVehicleList()
+                        },
                         shape = RectangleShape
                     )
                     Spacer(modifier = Modifier.height(8.dp))

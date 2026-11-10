@@ -5,6 +5,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.parkmate.ui.view.home.HomeView
+import com.example.parkmate.ui.view.vehicle.AddVehicleView
 import com.example.parkmate.ui.view.vehicle.VehicleListView
 
 @Composable
@@ -21,7 +22,14 @@ fun AppNavigation() {
             )
         }
         composable<VehicleListRoute> {
-            VehicleListView()
+            VehicleListView(
+                onBackButtonClick = { navController.popBackStack() }
+            )
+        }
+        composable<AddVehicleRoute> {
+            AddVehicleView(
+                onBackButtonClick = { navController.popBackStack() }
+            )
         }
     }
 }

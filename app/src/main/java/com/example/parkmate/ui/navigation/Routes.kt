@@ -6,4 +6,5 @@ import kotlinx.serialization.Serializable
 object HomeRoute
 @Serializable
 object VehicleListRoute
-
+@Serializable
+object AddVehicleRoute

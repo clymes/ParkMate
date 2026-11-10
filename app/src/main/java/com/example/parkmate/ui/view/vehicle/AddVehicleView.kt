@@ -8,16 +8,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.parkmate.ui.component.BackButton
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddVehicleView() {
+fun AddVehicleView(
+    onBackButtonClick: () -> Unit
+) {
     var name by remember { mutableStateOf("") }
     var type by remember { mutableStateOf("") }
     var plate by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
-            // TODO: freccia indietro
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    BackButton(onBackButtonClick = onBackButtonClick)
+                }
+            )
         }
     ) { innerPadding ->
         Column(
@@ -63,5 +72,7 @@ fun AddVehicleView() {
 @Preview(showBackground = true)
 @Composable
 fun AddVehicleViewPreview() {
-    AddVehicleView()
+    AddVehicleView(
+        onBackButtonClick = {}
+    )
 }
