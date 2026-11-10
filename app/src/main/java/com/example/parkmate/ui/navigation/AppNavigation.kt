@@ -50,7 +50,7 @@ fun AppNavigation() {
         composable<VehicleListRoute> {
             VehicleListView(
                 onBackButtonClick = { navController.popBackStack() },
-                goToAddVehicle = { navController.navigate(AddVehicleRoute) }
+                goToAddVehicleView = { navController.navigate(AddVehicleRoute) }
             )
         }
         composable<AddVehicleRoute> {
