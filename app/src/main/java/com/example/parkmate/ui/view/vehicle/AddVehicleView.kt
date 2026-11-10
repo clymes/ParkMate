@@ -1,10 +1,12 @@
 package com.example.parkmate.ui.view.vehicle
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.parkmate.model.VehicleType
@@ -15,6 +17,9 @@ import com.example.parkmate.ui.component.BackButton
 fun AddVehicleView(
     onBackButtonClick: () -> Unit,
 ) {
+    val context = LocalContext.current
+    val viewModel = remember { VehicleViewModel() }
+
     var name by remember { mutableStateOf("") }
     var selectedType by remember { mutableStateOf<VehicleType?>(null) }
     var isTypeDropdownExpanded by remember { mutableStateOf(value = false) }
@@ -101,7 +106,21 @@ fun AddVehicleView(
             )
 
             Button(
-                onClick = { /* TODO: aggiungi veicolo alla lista */ },
+                onClick = {
+                    viewModel.addVehicle(
+                        context = context,
+                        name = name,
+                        type = selectedType,
+                        plate = plate,
+                        onError = { errorMessage ->
+                            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                        },
+                        onSuccess = { successMessage ->
+                            Toast.makeText(context, successMessage, Toast.LENGTH_SHORT).show()
+                            onBackButtonClick()
+                        },
+                    )
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background),
