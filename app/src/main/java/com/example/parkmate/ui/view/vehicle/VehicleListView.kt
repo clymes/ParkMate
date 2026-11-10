@@ -1,6 +1,7 @@
 package com.example.parkmate.ui.view.vehicle
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,7 +13,8 @@ import com.example.parkmate.ui.component.BackButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VehicleListView(
-    onBackButtonClick: () -> Unit
+    onBackButtonClick: () -> Unit,
+    goToAddVehicle: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -22,7 +24,6 @@ fun VehicleListView(
                     BackButton(onBackButtonClick = onBackButtonClick)
                 }
             )
-            // TODO: aggiungere tasto "aggiungi veicolo"
         }
     ) { innerPadding ->
         Column(
@@ -34,6 +35,16 @@ fun VehicleListView(
             horizontalAlignment = Alignment.Start
         ) {
             // TODO: lista veicoli
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Button(
+                onClick = goToAddVehicle,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(text = "Aggiungi Veicolo")
+            }
         }
     }
 }
@@ -42,6 +53,7 @@ fun VehicleListView(
 @Composable
 fun VehicleListViewPreview() {
     VehicleListView(
-        onBackButtonClick = {}
+        onBackButtonClick = {},
+        goToAddVehicle = {}
     )
 }
