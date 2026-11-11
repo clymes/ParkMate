@@ -18,12 +18,20 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun locationDao(): LocationDao
 
     companion object {
+        private var istance: AppDatabase? = null
         fun getInstance(context: Context): AppDatabase {
-            return Room.databaseBuilder(
+            if(istance != null) {
+                return istance!!
+            }
+
+            val newIstance = Room.databaseBuilder(
                 context.applicationContext,
                 AppDatabase::class.java,
                 "database.db"
             ).fallbackToDestructiveMigration(false).build()
+
+            istance = newIstance
+            return newIstance
         }
     }
 }
