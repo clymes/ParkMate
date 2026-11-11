@@ -6,7 +6,7 @@ import androidx.room.Query
 import com.example.parkmate.model.Vehicle
 import kotlinx.coroutines.flow.Flow
 
-// Data Access Object
+// Data Access Object per i veicoli
 @Dao
 interface VehicleDao {
     @Insert

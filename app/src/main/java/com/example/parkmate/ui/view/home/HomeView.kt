@@ -34,15 +34,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeView(
-    goToVehicleList: () -> Unit
+    goToVehicleList: () -> Unit,
+    goToLocationList: () -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
+    //TODO: Rivedere
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(LatLng(41.9028, 12.4964), 10f)
+    }
 
     // MENU LATERALE
     ModalNavigationDrawer(
@@ -88,7 +98,10 @@ fun HomeView(
                     NavigationDrawerItem(
                         label = { Text(text = "POSIZIONI") },
                         selected = false,
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            scope.launch { drawerState.close() }
+                            goToLocationList()
+                        },
                         shape = RectangleShape
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -140,7 +153,13 @@ fun HomeView(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-            ) {}
+            ) {
+                //TODO: rivedere
+                GoogleMap(
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState
+                )
+            }
         }
     }
 }
@@ -149,6 +168,7 @@ fun HomeView(
 @Preview
 fun HomeViewPreview() {
     HomeView(
-        goToVehicleList = {}
+        goToVehicleList = {},
+        goToLocationList = {}
     )
 }
