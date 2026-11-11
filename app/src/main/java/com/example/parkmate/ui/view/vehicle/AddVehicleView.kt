@@ -59,11 +59,11 @@ fun AddVehicleView(
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("Tipo veicolo") },
-                    leadingIcon = selectedType?.let { type ->
-                        {
+                    leadingIcon = {
+                        selectedType?.let {
                             Icon(
-                                imageVector = type.icon,
-                                contentDescription = type.displayName,
+                                imageVector = it.icon,
+                                contentDescription = it.displayName
                             )
                         }
                     },

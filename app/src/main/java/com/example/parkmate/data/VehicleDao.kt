@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.parkmate.model.Vehicle
+import kotlinx.coroutines.flow.Flow
 
 // Data Access Object
 @Dao
@@ -12,5 +13,8 @@ interface VehicleDao {
     suspend fun addVehicle(vehicle: Vehicle)
 
     @Query("SELECT * FROM vehicles")
-    suspend fun getAllVehicles(): List<Vehicle>
+    fun getAllVehicles(): Flow<List<Vehicle>>
+
+    @Query("SELECT * FROM vehicles WHERE id = :id")
+    fun getVehicleById(id: Int): Flow<Vehicle?>
 }

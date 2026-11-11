@@ -7,10 +7,12 @@ import com.example.parkmate.data.AppDatabase
 import com.example.parkmate.model.Vehicle
 import com.example.parkmate.model.VehicleType
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class VehicleViewModel : ViewModel() {
+
     fun validateVehicle(name: String, type: String, plate: String): String? {
         if (name.isBlank()) return "Il nome del veicolo non può essere vuoto."
         if (type.isBlank()) return "Il tipo di veicolo non può essere vuoto."
@@ -49,11 +51,21 @@ class VehicleViewModel : ViewModel() {
                     name = name.trim(),
                     type = typeString,
                     plate = plate.trim(),
-                )
+                ),
             )
             withContext(Dispatchers.Main) {
                 onSuccess(successMessage)
             }
         }
+    }
+
+    fun getAllVehicles(context: Context): Flow<List<Vehicle>> {
+        val db = AppDatabase.getInstance(context)
+        return db.vehicleDao().getAllVehicles()
+    }
+
+    fun getVehicleById(context: Context, vehicleId: Int): Flow<Vehicle?> {
+        val db = AppDatabase.getInstance(context)
+        return db.vehicleDao().getVehicleById(vehicleId)
     }
 }
