@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.parkmate.ui.view.home.HomeView
 import com.example.parkmate.ui.view.location.LocationListView
-import com.example.parkmate.ui.view.vehicle.AddVehicleView
+import com.example.parkmate.ui.view.vehicle.VehicleAddView
 import com.example.parkmate.ui.view.vehicle.VehicleDetailView
 import com.example.parkmate.ui.view.vehicle.VehicleListView
 
@@ -56,14 +56,14 @@ fun AppNavigation() {
         composable<VehicleListRoute> {
             VehicleListView(
                 onBackButtonClick = { navController.popBackStack() },
-                goToAddVehicleView = { navController.navigate(AddVehicleRoute) },
+                goToVehicleAddView = { navController.navigate(VehicleAddRoute) },
                 goToVehicleDetailView = { vehicleId ->
                     navController.navigate(VehicleDetailRoute(vehicleId))
                 },
             )
         }
-        composable<AddVehicleRoute> {
-            AddVehicleView(
+        composable<VehicleAddRoute> {
+            VehicleAddView(
                 onBackButtonClick = { navController.popBackStack() },
             )
         }

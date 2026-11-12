@@ -8,7 +8,7 @@ object HomeRoute
 @Serializable
 object VehicleListRoute
 @Serializable
-object AddVehicleRoute
+object VehicleAddRoute
 @Serializable
 data class VehicleDetailRoute(val vehicleId: Int)
 

@@ -14,7 +14,7 @@ import com.example.parkmate.ui.component.BackButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddVehicleView(
+fun VehicleAddView(
     onBackButtonClick: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -133,8 +133,8 @@ fun AddVehicleView(
 
 @Preview(showBackground = true)
 @Composable
-fun AddVehicleViewPreview() {
-    AddVehicleView(
+fun VehicleAddViewPreview() {
+    VehicleAddView(
         onBackButtonClick = {},
     )
 }

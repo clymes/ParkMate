@@ -24,7 +24,7 @@ import com.example.parkmate.ui.component.BackButton
 @Composable
 fun VehicleListView(
     onBackButtonClick: () -> Unit,
-    goToAddVehicleView: () -> Unit,
+    goToVehicleAddView: () -> Unit,
     goToVehicleDetailView: (vehicleId: Int) -> Unit,
     viewModel: VehicleViewModel = remember { VehicleViewModel() },
 ) {
@@ -82,7 +82,7 @@ fun VehicleListView(
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = goToAddVehicleView,
+                onClick = goToVehicleAddView,
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(text = "Aggiungi Veicolo")
@@ -144,7 +144,7 @@ fun VehicleItem(
 fun VehicleListViewPreview() {
     VehicleListView(
         onBackButtonClick = {},
-        goToAddVehicleView = {},
+        goToVehicleAddView = {},
         goToVehicleDetailView = {},
     )
 }
