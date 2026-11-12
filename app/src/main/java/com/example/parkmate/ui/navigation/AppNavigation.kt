@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.parkmate.ui.view.home.HomeView
-import com.example.parkmate.ui.view.parking.LocationListView
+import com.example.parkmate.ui.view.location.LocationListView
 import com.example.parkmate.ui.view.vehicle.AddVehicleView
 import com.example.parkmate.ui.view.vehicle.VehicleDetailView
 import com.example.parkmate.ui.view.vehicle.VehicleListView

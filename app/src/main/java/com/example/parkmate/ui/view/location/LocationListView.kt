@@ -1,4 +1,4 @@
-package com.example.parkmate.ui.view.parking
+package com.example.parkmate.ui.view.location
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -64,7 +64,6 @@ fun LocationListView(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-
             Button(
                 onClick = { /* TODO */ },
                 modifier = Modifier.fillMaxWidth(),

@@ -1,4 +1,4 @@
-package com.example.parkmate.ui.view.parking
+package com.example.parkmate.ui.view.location
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

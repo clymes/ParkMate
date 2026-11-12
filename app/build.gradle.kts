@@ -38,6 +38,12 @@ android {
     }
 }
 
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xskip-metadata-version-check")
+    }
+}
+
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
@@ -48,8 +54,10 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation("androidx.compose.material:material-icons-extended")
+    implementation("org.maplibre.compose:location-runtime-gms:0.20.0")
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.maps.compose)
+    implementation(libs.maplibre.compose)
+    implementation(libs.maplibre.native.ffi.runtime.opengl)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
