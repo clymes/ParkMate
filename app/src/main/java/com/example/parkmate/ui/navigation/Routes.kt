@@ -15,3 +15,5 @@ data class VehicleDetailRoute(val vehicleId: Int)
 //POSIZIONI
 @Serializable
 object LocationListRoute
+@Serializable
+object LocationAddRoute

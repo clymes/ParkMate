@@ -18,6 +18,7 @@ import com.example.parkmate.ui.component.BackButton
 @Composable
 fun LocationListView(
     onBackButtonClick: () -> Unit,
+    goToLocationAddView: () -> Unit,
     viewModel: LocationViewModel = remember { LocationViewModel() },
 ) {
     val context = LocalContext.current
@@ -65,7 +66,7 @@ fun LocationListView(
 
             Spacer(modifier = Modifier.height(16.dp))
             Button(
-                onClick = { /* TODO */ },
+                onClick = { goToLocationAddView() },
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(text = "Aggiungi Posizione")
@@ -79,5 +80,6 @@ fun LocationListView(
 fun LocationListViewPreview() {
     LocationListView(
         onBackButtonClick = {},
+        goToLocationAddView = {},
     )
 }

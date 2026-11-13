@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.parkmate.ui.view.home.HomeView
+import com.example.parkmate.ui.view.location.LocationAddView
 import com.example.parkmate.ui.view.location.LocationListView
 import com.example.parkmate.ui.view.vehicle.VehicleAddView
 import com.example.parkmate.ui.view.vehicle.VehicleDetailView
@@ -75,9 +76,15 @@ fun AppNavigation() {
             )
         }
 
-        //PARCHEGGI
+        //POSIZIONI
         composable<LocationListRoute> {
             LocationListView(
+                onBackButtonClick = { navController.popBackStack() },
+                goToLocationAddView = { navController.navigate(LocationAddRoute) },
+            )
+        }
+        composable<LocationAddRoute> {
+            LocationAddView(
                 onBackButtonClick = { navController.popBackStack() },
             )
         }
