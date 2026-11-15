@@ -10,6 +10,10 @@ import androidx.navigation.toRoute
 import com.example.parkmate.ui.view.home.HomeView
 import com.example.parkmate.ui.view.location.LocationAddView
 import com.example.parkmate.ui.view.location.LocationListView
+import com.example.parkmate.ui.view.parking.ParkingLocationView
+import com.example.parkmate.ui.view.parking.ParkingSummaryView
+import com.example.parkmate.ui.view.parking.ParkingTypeView
+import com.example.parkmate.ui.view.parking.ParkingVehicleView
 import com.example.parkmate.ui.view.vehicle.VehicleAddView
 import com.example.parkmate.ui.view.vehicle.VehicleDetailView
 import com.example.parkmate.ui.view.vehicle.VehicleListView
@@ -49,7 +53,8 @@ fun AppNavigation() {
         composable<HomeRoute> {
             HomeView(
                 goToVehicleList = { navController.navigate(VehicleListRoute) },
-                goToLocationList = { navController.navigate(LocationListRoute) }
+                goToLocationList = { navController.navigate(LocationListRoute) },
+                goToParkingLocation = { navController.navigate(ParkingLocationRoute) },
             )
         }
 
@@ -66,6 +71,11 @@ fun AppNavigation() {
         composable<VehicleAddRoute> {
             VehicleAddView(
                 onBackButtonClick = { navController.popBackStack() },
+                goToVehicleListView = {
+                    navController.navigate(VehicleListRoute) {
+                        popUpTo(VehicleListRoute) { inclusive = true }
+                    }
+                },
             )
         }
         composable<VehicleDetailRoute> { backStackEntry ->
@@ -86,7 +96,41 @@ fun AppNavigation() {
         composable<LocationAddRoute> {
             LocationAddView(
                 onBackButtonClick = { navController.popBackStack() },
-                goToLocationListView = {navController.navigate(LocationListRoute)}
+                goToLocationListView = {
+                    navController.navigate(LocationListRoute) {
+                        popUpTo(LocationListRoute) { inclusive = true }
+                    }
+                },
+            )
+        }
+
+        //PARCHEGGI
+        composable<ParkingLocationRoute> {
+            ParkingLocationView(
+                onBackButtonClick = { navController.popBackStack() },
+                onLocationSelected = { navController.navigate(ParkingVehicleRoute) },
+            )
+        }
+        composable<ParkingVehicleRoute> {
+            ParkingVehicleView(
+                onBackButtonClick = { navController.popBackStack() },
+                onVehicleSelected = { navController.navigate(ParkingTypeRoute) },
+            )
+        }
+        composable<ParkingTypeRoute> {
+            ParkingTypeView(
+                onBackButtonClick = { navController.popBackStack() },
+                onNextButtonClick = { navController.navigate(ParkingSummaryRoute) },
+            )
+        }
+        composable<ParkingSummaryRoute> {
+            ParkingSummaryView(
+                onBackButtonClick = { navController.popBackStack() },
+                onNextButtonClick = {
+                    navController.navigate(HomeRoute) {
+                        popUpTo(HomeRoute) { inclusive = true }
+                    }
+                },
             )
         }
     }

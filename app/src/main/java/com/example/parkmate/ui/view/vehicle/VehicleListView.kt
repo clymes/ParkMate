@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.parkmate.model.Vehicle
+import com.example.parkmate.model.VehicleItem
 import com.example.parkmate.model.VehicleType
 import com.example.parkmate.ui.component.BackButton
 
@@ -87,54 +88,6 @@ fun VehicleListView(
             ) {
                 Text(text = "Aggiungi Veicolo")
             }
-        }
-    }
-}
-
-@Composable
-fun VehicleItem(
-    vehicle: Vehicle,
-    onVehicleDetailClick: () -> Unit,
-) {
-    val vehicleType = VehicleType.fromString(vehicle.type)
-
-    Button(
-        onClick = onVehicleDetailClick,
-        modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(12.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        ),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Icon(
-                imageVector = vehicleType.icon,
-                contentDescription = vehicleType.displayName,
-                modifier = Modifier.size(28.dp),
-                tint = MaterialTheme.colorScheme.primary,
-            )
-            Column(
-                modifier = Modifier.weight(1f),
-            ) {
-                Text(
-                    text = vehicle.name,
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                Text(
-                    text = vehicle.plate,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = "Vai al dettaglio",
-            )
         }
     }
 }

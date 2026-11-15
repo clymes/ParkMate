@@ -17,3 +17,13 @@ data class VehicleDetailRoute(val vehicleId: Int)
 object LocationListRoute
 @Serializable
 object LocationAddRoute
+
+//PARCHEGGIO
+@Serializable
+object ParkingLocationRoute
+@Serializable
+object ParkingVehicleRoute
+@Serializable
+object ParkingTypeRoute
+@Serializable
+object ParkingSummaryRoute

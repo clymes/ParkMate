@@ -41,7 +41,8 @@ import com.example.parkmate.ui.component.MapLibre
 @Composable
 fun HomeView(
     goToVehicleList: () -> Unit,
-    goToLocationList: () -> Unit
+    goToLocationList: () -> Unit,
+    goToParkingLocation: () -> Unit,
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -155,7 +156,7 @@ fun HomeView(
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
-                    onClick = { /* TODO */ },
+                    onClick = goToParkingLocation,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(text = "Parcheggia")
@@ -170,6 +171,7 @@ fun HomeView(
 fun HomeViewPreview() {
     HomeView(
         goToVehicleList = {},
-        goToLocationList = {}
+        goToLocationList = {},
+        goToParkingLocation = {}
     )
 }

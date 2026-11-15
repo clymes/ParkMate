@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.parkmate.model.Location
+import com.example.parkmate.model.LocationItem
 import com.example.parkmate.ui.component.BackButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -88,52 +89,6 @@ fun LocationListView(
             ) {
                 Text(text = "Aggiungi Posizione")
             }
-        }
-    }
-}
-
-@Composable
-fun LocationItem(
-    location: Location,
-    onLocationClick: () -> Unit,
-) {
-    Button(
-        onClick = onLocationClick,
-        modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(12.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        ),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Icon(
-                imageVector = Icons.Default.LocationOn,
-                contentDescription = "Posizione",
-                modifier = Modifier.size(28.dp),
-                tint = MaterialTheme.colorScheme.primary,
-            )
-            Column(
-                modifier = Modifier.weight(1f),
-            ) {
-                Text(
-                    text = location.name,
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                Text(
-                    text = location.address,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = "Vai al dettaglio",
-            )
         }
     }
 }
