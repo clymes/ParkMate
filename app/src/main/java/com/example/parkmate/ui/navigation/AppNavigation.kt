@@ -86,6 +86,7 @@ fun AppNavigation() {
         composable<LocationAddRoute> {
             LocationAddView(
                 onBackButtonClick = { navController.popBackStack() },
+                goToLocationListView = {navController.navigate(LocationListRoute)}
             )
         }
     }

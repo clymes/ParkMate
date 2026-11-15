@@ -9,5 +9,6 @@ data class Location(
     val id: Int = 0,
     val name: String,
     val lat: Float,
-    val long: Float
+    val long: Float,
+    val address: String
 )

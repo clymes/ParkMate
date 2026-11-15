@@ -9,7 +9,7 @@ import com.example.parkmate.model.Location
 
 @Database(
     entities = [Vehicle::class, Location::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

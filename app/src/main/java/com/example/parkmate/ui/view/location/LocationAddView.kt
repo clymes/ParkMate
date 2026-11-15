@@ -28,6 +28,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @Composable
 fun LocationAddView(
     onBackButtonClick: () -> Unit,
+    goToLocationListView: () -> Unit
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -255,14 +256,25 @@ fun LocationAddView(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     OutlinedButton(
-                        onClick = { showCheckInfoModal = false },
+                        onClick = {
+                            showCheckInfoModal = false
+                            onBackButtonClick()
+                        },
                         modifier = Modifier.weight(1f)
                     ) {
                         Text("Annulla")
                     }
                     Button(
                         onClick = {
+                            viewModel.addLocation(
+                                context = context,
+                                name = locationName.ifBlank { "Posizione senza nome" },
+                                lat = mapState.cameraPosition.center.latitude.toFloat(),
+                                long = mapState.cameraPosition.center.longitude.toFloat(),
+                                address = geocodedAddress
+                            )
                             showCheckInfoModal = false
+                            goToLocationListView()
                         },
                         modifier = Modifier.weight(1f)
                     ) {
@@ -280,5 +292,6 @@ fun LocationAddView(
 fun LocationAddViewPreview() {
     LocationAddView(
         onBackButtonClick = {},
+        goToLocationListView = {}
     )
 }
