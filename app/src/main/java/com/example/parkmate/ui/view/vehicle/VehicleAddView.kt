@@ -16,7 +16,7 @@ import com.example.parkmate.ui.component.BackButton
 @Composable
 fun VehicleAddView(
     onBackButtonClick: () -> Unit,
-    goToVehicleListView: () -> Unit = {},
+    onSuccessfulAdd: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val viewModel = remember { VehicleViewModel() }
@@ -118,7 +118,7 @@ fun VehicleAddView(
                         },
                         onSuccess = { successMessage ->
                             Toast.makeText(context, successMessage, Toast.LENGTH_SHORT).show()
-                            goToVehicleListView()
+                            onSuccessfulAdd()
                         },
                     )
                 },

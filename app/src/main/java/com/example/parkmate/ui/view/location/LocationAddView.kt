@@ -28,7 +28,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @Composable
 fun LocationAddView(
     onBackButtonClick: () -> Unit,
-    goToLocationListView: () -> Unit
+    onSuccessfulAdd: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -258,7 +258,6 @@ fun LocationAddView(
                     OutlinedButton(
                         onClick = {
                             showCheckInfoModal = false
-                            onBackButtonClick()
                         },
                         modifier = Modifier.weight(1f)
                     ) {
@@ -274,7 +273,7 @@ fun LocationAddView(
                                 address = geocodedAddress
                             )
                             showCheckInfoModal = false
-                            goToLocationListView()
+                            onSuccessfulAdd()
                         },
                         modifier = Modifier.weight(1f)
                     ) {
@@ -292,6 +291,5 @@ fun LocationAddView(
 fun LocationAddViewPreview() {
     LocationAddView(
         onBackButtonClick = {},
-        goToLocationListView = {}
     )
 }

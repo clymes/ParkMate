@@ -31,6 +31,7 @@ import com.example.parkmate.ui.component.BackButton
 fun ParkingLocationView(
     onBackButtonClick: () -> Unit,
     onLocationSelected: (Location) -> Unit = {},
+    onAddLocationClick: () -> Unit = {},
     viewModel: ParkingViewModel = remember { ParkingViewModel() },
 ) {
     val context = LocalContext.current
@@ -51,7 +52,7 @@ fun ParkingLocationView(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (locationList.isEmpty()) {
@@ -85,6 +86,13 @@ fun ParkingLocationView(
                         )
                     }
                 }
+            }
+
+            androidx.compose.material3.Button(
+                onClick = onAddLocationClick,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Aggiungi Posizione")
             }
         }
     }

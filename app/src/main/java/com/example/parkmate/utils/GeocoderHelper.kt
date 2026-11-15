@@ -4,6 +4,7 @@ import android.content.Context
 import android.location.Address
 import android.location.Geocoder
 import android.os.Build
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -51,6 +52,7 @@ suspend fun getAddressFromCoords(
 
                     override fun onError(errorMessage: String?) {
                         if (continuation.isActive) {
+                            Log.e("GeocoderHelper", "Errore nel GeocoderHelper: $errorMessage")
                             continuation.resume("Lat: $lat, Long: $long")
                         }
                     }
@@ -65,7 +67,8 @@ suspend fun getAddressFromCoords(
         }
     } catch (e: kotlinx.coroutines.CancellationException) {
         throw e
-    } catch (_: Exception) {
+    } catch (e: Exception) {
+        Log.e("GeocoderHelper", "Exception in getAddressFromCoords", e)
         "Lat: $lat, Long: $long"
     }
 }
@@ -106,6 +109,7 @@ suspend fun getCoordsFromAddress(
 
                     override fun onError(errorMessage: String?) {
                         if (continuation.isActive) {
+                            Log.e("GeocoderHelper", "Errore nel GeocoderHelper per indirizzo: $errorMessage")
                             continuation.resume(null)
                         }
                     }
@@ -126,7 +130,8 @@ suspend fun getCoordsFromAddress(
         }
     } catch (e: kotlinx.coroutines.CancellationException) {
         throw e
-    } catch (_: Exception) {
+    } catch (e: Exception) {
+        Log.e("GeocoderHelper", "Exception in getCoordsFromAddress", e)
         null
     }
 }

@@ -71,11 +71,7 @@ fun AppNavigation() {
         composable<VehicleAddRoute> {
             VehicleAddView(
                 onBackButtonClick = { navController.popBackStack() },
-                goToVehicleListView = {
-                    navController.navigate(VehicleListRoute) {
-                        popUpTo(VehicleListRoute) { inclusive = true }
-                    }
-                },
+                onSuccessfulAdd = { navController.popBackStack() },
             )
         }
         composable<VehicleDetailRoute> { backStackEntry ->
@@ -96,11 +92,7 @@ fun AppNavigation() {
         composable<LocationAddRoute> {
             LocationAddView(
                 onBackButtonClick = { navController.popBackStack() },
-                goToLocationListView = {
-                    navController.navigate(LocationListRoute) {
-                        popUpTo(LocationListRoute) { inclusive = true }
-                    }
-                },
+                onSuccessfulAdd = { navController.popBackStack() }
             )
         }
 
@@ -109,12 +101,14 @@ fun AppNavigation() {
             ParkingLocationView(
                 onBackButtonClick = { navController.popBackStack() },
                 onLocationSelected = { navController.navigate(ParkingVehicleRoute) },
+                onAddLocationClick = { navController.navigate(LocationAddRoute) },
             )
         }
         composable<ParkingVehicleRoute> {
             ParkingVehicleView(
                 onBackButtonClick = { navController.popBackStack() },
                 onVehicleSelected = { navController.navigate(ParkingTypeRoute) },
+                onAddVehicleClick = { navController.navigate(VehicleAddRoute) },
             )
         }
         composable<ParkingTypeRoute> {

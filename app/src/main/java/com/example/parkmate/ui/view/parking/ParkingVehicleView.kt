@@ -31,6 +31,7 @@ import com.example.parkmate.ui.component.BackButton
 fun ParkingVehicleView(
     onBackButtonClick: () -> Unit,
     onVehicleSelected: (Vehicle) -> Unit = {},
+    onAddVehicleClick: () -> Unit = {},
     viewModel: ParkingViewModel = remember { ParkingViewModel() },
 ) {
     val context = LocalContext.current
@@ -51,7 +52,7 @@ fun ParkingVehicleView(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (vehicleList.isEmpty()) {
@@ -85,6 +86,13 @@ fun ParkingVehicleView(
                         )
                     }
                 }
+            }
+
+            androidx.compose.material3.Button(
+                onClick = onAddVehicleClick,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Aggiungi Veicolo")
             }
         }
     }
