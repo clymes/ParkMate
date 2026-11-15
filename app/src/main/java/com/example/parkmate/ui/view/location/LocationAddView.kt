@@ -7,16 +7,22 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.parkmate.model.PhotonFeature
 import com.example.parkmate.ui.component.BackButton
 import com.example.parkmate.ui.component.CheckInfoModal
 import com.example.parkmate.ui.component.MapLibre
 import com.example.parkmate.ui.component.SearchTextInput
 import com.example.parkmate.ui.component.getMapState
 import com.example.parkmate.utils.getAddressFromCoords
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.maplibre.compose.camera.CameraUpdate
+import org.maplibre.spatialk.geojson.Position
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,15 +30,41 @@ fun LocationAddView(
     onBackButtonClick: () -> Unit,
 ) {
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
     val viewModel = remember { LocationViewModel() }
     val scope = rememberCoroutineScope()
 
-    val mapState = getMapState()
+    var isTrackingLocation by remember { mutableStateOf(true) }
+    val mapState = getMapState(isTracking = isTrackingLocation)
     var searchQuery by remember { mutableStateOf("") }
+    var searchResults by remember { mutableStateOf<List<PhotonFeature>>(emptyList()) }
+    var isDropdownExpanded by remember { mutableStateOf(false) }
+    var isSelectingSuggestion by remember { mutableStateOf(false) }
+
     var locationName by remember { mutableStateOf("") }
     var geocodedAddress by remember { mutableStateOf("") }
 
     var showCheckInfoModal by remember { mutableStateOf(false) }
+
+    LaunchedEffect(searchQuery) {
+        if (isSelectingSuggestion) {
+            isSelectingSuggestion = false
+            return@LaunchedEffect
+        }
+
+        val trimmedQuery = searchQuery.trim()
+        if (trimmedQuery.length < 3) {
+            searchResults = emptyList()
+            isDropdownExpanded = false
+            return@LaunchedEffect
+        }
+
+        delay(400.milliseconds)
+
+        val results = viewModel.searchPhotonLocations(trimmedQuery)
+        searchResults = results
+        isDropdownExpanded = results.isNotEmpty()
+    }
 
     Scaffold(
         topBar = {
@@ -61,15 +93,81 @@ fun LocationAddView(
                     mapState = mapState,
                     showCenterPin = true
                 )
-                SearchTextInput(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    placeholderText = "Cerca indirizzo o luogo...",
+                
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(12.dp)
-                        .align(Alignment.TopCenter)
-                )
+                        .align(Alignment.TopCenter),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    SearchTextInput(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        placeholderText = "Cerca indirizzo o luogo...",
+                        onClearClick = {
+                            searchQuery = ""
+                            searchResults = emptyList()
+                            isDropdownExpanded = false
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    if (isDropdownExpanded && searchResults.isNotEmpty()) {
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(max = 250.dp),
+                            shape = MaterialTheme.shapes.medium,
+                            shadowElevation = 6.dp,
+                            tonalElevation = 2.dp
+                        ) {
+                            Column {
+                                searchResults.forEachIndexed { index, feature ->
+                                    val displayString = feature.toDisplayString()
+                                    if (displayString.isNotBlank()) {
+                                        DropdownMenuItem(
+                                            text = {
+                                                Text(
+                                                    text = displayString,
+                                                    style = MaterialTheme.typography.bodyMedium
+                                                )
+                                            },
+                                            onClick = {
+                                                isSelectingSuggestion = true
+                                                searchQuery = displayString
+                                                isDropdownExpanded = false
+                                                searchResults = emptyList()
+
+                                                focusManager.clearFocus()
+
+                                                val lat = feature.lat
+                                                val long = feature.long
+                                                if (lat != null && long != null) {
+                                                    isTrackingLocation = false // Disable tracking to allow panning to selected location
+                                                    scope.launch {
+                                                        mapState.animateCamera(
+                                                            CameraUpdate(
+                                                                center = Position(
+                                                                    longitude = long,
+                                                                    latitude = lat
+                                                                ),
+                                                                zoom = 15.0
+                                                            )
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        )
+                                        if (index < searchResults.lastIndex) {
+                                            HorizontalDivider(thickness = 0.5.dp)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
             OutlinedTextField(
                 value = locationName,

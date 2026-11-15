@@ -63,6 +63,8 @@ suspend fun getAddressFromCoords(
             val stringAddress = firstAddress?.getAddressLine(0)
             stringAddress ?: "Indirizzo non trovato"
         }
+    } catch (e: kotlinx.coroutines.CancellationException) {
+        throw e
     } catch (_: Exception) {
         "Lat: $lat, Long: $long"
     }
@@ -122,6 +124,8 @@ suspend fun getCoordsFromAddress(
                 null
             }
         }
+    } catch (e: kotlinx.coroutines.CancellationException) {
+        throw e
     } catch (_: Exception) {
         null
     }

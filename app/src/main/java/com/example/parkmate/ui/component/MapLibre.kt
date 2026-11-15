@@ -63,7 +63,9 @@ fun MapLibre(
 }
 
 @Composable
-fun getMapState(): MapState {
+fun getMapState(
+    isTracking: Boolean = true
+): MapState {
     val locationProvider = rememberDefaultLocationProvider()
     val headingProvider = rememberDefaultHeadingProvider()
 
@@ -82,10 +84,12 @@ fun getMapState(): MapState {
             locationState = locationState,
         )
 
-        LocationTrackingEffect(locationState = locationState) {
-            currentMapState.animateCamera(
-                CameraUpdate(center = this.currentLocation.position, zoom = 15.0)
-            )
+        if (isTracking) {
+            LocationTrackingEffect(locationState = locationState) {
+                currentMapState.animateCamera(
+                    CameraUpdate(center = this.currentLocation.position, zoom = 15.0)
+                )
+            }
         }
     }
 }
