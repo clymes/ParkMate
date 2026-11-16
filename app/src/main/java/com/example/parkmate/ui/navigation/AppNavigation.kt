@@ -10,6 +10,7 @@ import androidx.navigation.toRoute
 import com.example.parkmate.ui.view.home.HomeView
 import com.example.parkmate.ui.view.location.LocationAddView
 import com.example.parkmate.ui.view.location.LocationListView
+import com.example.parkmate.ui.view.parking.ActiveParkingsView
 import com.example.parkmate.ui.view.parking.ParkingLocationView
 import com.example.parkmate.ui.view.parking.ParkingSummaryView
 import com.example.parkmate.ui.view.parking.ParkingTypeView
@@ -55,9 +56,16 @@ fun AppNavigation() {
     ) {
         composable<HomeRoute> {
             HomeView(
-                goToVehicleList = { navController.navigate(VehicleListRoute) },
-                goToLocationList = { navController.navigate(LocationListRoute) },
-                goToParkingLocation = { navController.navigate(ParkingLocationRoute) },
+                goToVehicleListView = { navController.navigate(VehicleListRoute) },
+                goToLocationListView = { navController.navigate(LocationListRoute) },
+                goToParkingLocationView = { navController.navigate(ParkingLocationRoute) },
+                goToActiveParkingsView = { navController.navigate(ActiveParkingsRoute) },
+            )
+        }
+
+        composable<ActiveParkingsRoute> {
+            ActiveParkingsView(
+                onBackButtonClick = { navController.popBackStack() }
             )
         }
 

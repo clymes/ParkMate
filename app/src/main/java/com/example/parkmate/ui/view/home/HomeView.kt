@@ -27,23 +27,31 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import com.example.parkmate.ui.component.MapLibre
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeView(
-    goToVehicleList: () -> Unit,
-    goToLocationList: () -> Unit,
-    goToParkingLocation: () -> Unit,
+    goToVehicleListView: () -> Unit,
+    goToLocationListView: () -> Unit,
+    goToParkingLocationView: () -> Unit,
+    goToActiveParkingsView: () -> Unit,
+    viewModel: HomeViewModel = viewModel(),
 ) {
+    val context = LocalContext.current
+    val activeParkings by viewModel.getActiveParkings(context).collectAsState(initial = emptyList())
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -83,7 +91,7 @@ fun HomeView(
                         selected = false,
                         onClick = {
                             scope.launch { drawerState.close() }
-                            goToVehicleList()
+                            goToVehicleListView()
                         },
                         shape = RectangleShape
                     )
@@ -93,7 +101,7 @@ fun HomeView(
                         selected = false,
                         onClick = {
                             scope.launch { drawerState.close() }
-                            goToLocationList()
+                            goToLocationListView()
                         },
                         shape = RectangleShape
                     )
@@ -161,9 +169,21 @@ fun HomeView(
                         .weight(1f)
                 )
 
+                if (activeParkings.isNotEmpty()) {
+                    val count = activeParkings.size
+                    val text = if (count == 1) "1 parcheggio" else "$count parcheggi"
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = goToActiveParkingsView,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(text = text)
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
-                    onClick = goToParkingLocation,
+                    onClick = goToParkingLocationView,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(text = "Parcheggia")
@@ -177,8 +197,9 @@ fun HomeView(
 @Preview
 fun HomeViewPreview() {
     HomeView(
-        goToVehicleList = {},
-        goToLocationList = {},
-        goToParkingLocation = {}
+        goToVehicleListView = {},
+        goToLocationListView = {},
+        goToParkingLocationView = {},
+        goToActiveParkingsView = {}
     )
 }

@@ -20,6 +20,8 @@ object LocationAddRoute
 
 //PARCHEGGIO
 @Serializable
+object ActiveParkingsRoute
+@Serializable
 object ParkingLocationRoute
 @Serializable
 object ParkingVehicleRoute
