@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.parkmate.model.Location
-import com.example.parkmate.model.LocationItem
+import com.example.parkmate.ui.component.LocationItem
 import com.example.parkmate.ui.component.BackButton
 
 @OptIn(ExperimentalMaterial3Api::class)

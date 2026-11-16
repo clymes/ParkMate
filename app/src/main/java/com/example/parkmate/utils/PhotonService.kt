@@ -1,8 +1,6 @@
-package com.example.parkmate.network
+package com.example.parkmate.utils
 
 import android.util.Log
-import com.example.parkmate.model.PhotonFeature
-import com.example.parkmate.model.PhotonResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp

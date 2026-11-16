@@ -1,4 +1,4 @@
-package com.example.parkmate.model
+package com.example.parkmate.utils
 
 import kotlinx.serialization.Serializable
 @Serializable

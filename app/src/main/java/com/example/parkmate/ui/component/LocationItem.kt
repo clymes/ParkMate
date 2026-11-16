@@ -1,4 +1,4 @@
-package com.example.parkmate.model
+package com.example.parkmate.ui.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -18,16 +19,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.parkmate.model.Location
 
 @Composable
-fun VehicleItem(
-    vehicle: Vehicle,
-    onVehicleDetailClick: () -> Unit,
+fun LocationItem(
+    location: Location,
+    onLocationClick: () -> Unit,
 ) {
-    val vehicleType = VehicleType.fromString(vehicle.type)
-
     Button(
-        onClick = onVehicleDetailClick,
+        onClick = onLocationClick,
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(12.dp),
         shape = RoundedCornerShape(12.dp),
@@ -42,8 +42,8 @@ fun VehicleItem(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Icon(
-                imageVector = vehicleType.icon,
-                contentDescription = vehicleType.displayName,
+                imageVector = Icons.Default.LocationOn,
+                contentDescription = "Posizione",
                 modifier = Modifier.size(28.dp),
                 tint = MaterialTheme.colorScheme.primary,
             )
@@ -51,11 +51,11 @@ fun VehicleItem(
                 modifier = Modifier.weight(1f),
             ) {
                 Text(
-                    text = vehicle.name,
+                    text = location.name,
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Text(
-                    text = vehicle.plate,
+                    text = location.address,
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }

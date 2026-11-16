@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.example.parkmate.data.AppDatabase
 import com.example.parkmate.model.Location
-import com.example.parkmate.model.PhotonFeature
-import com.example.parkmate.network.PhotonService
+import com.example.parkmate.utils.PhotonFeature
+import com.example.parkmate.utils.PhotonService
 import kotlinx.coroutines.flow.Flow
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch

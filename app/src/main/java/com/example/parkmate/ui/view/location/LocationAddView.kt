@@ -11,7 +11,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.parkmate.model.PhotonFeature
+import com.example.parkmate.utils.PhotonFeature
 import com.example.parkmate.ui.component.BackButton
 import com.example.parkmate.ui.component.CheckInfoModal
 import com.example.parkmate.ui.component.MapLibre
