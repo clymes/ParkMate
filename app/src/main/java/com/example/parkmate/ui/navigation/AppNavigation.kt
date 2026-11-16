@@ -114,7 +114,17 @@ fun AppNavigation() {
         composable<ParkingTypeRoute> {
             ParkingTypeView(
                 onBackButtonClick = { navController.popBackStack() },
-                onNextButtonClick = { navController.navigate(ParkingSummaryRoute) },
+                onParkingSelected = { parking ->
+                    navController.navigate(ParkingInfoRoute(parking.displayName))
+                },
+            )
+        }
+        composable<ParkingInfoRoute> { backStackEntry ->
+            val route: ParkingInfoRoute = backStackEntry.toRoute()
+            com.example.parkmate.ui.view.parking.ParkingInfoView(
+                parkingType = route.parkingType,
+                onBackButtonClick = { navController.popBackStack() },
+                onNextButtonClick = { navController.navigate(ParkingSummaryRoute) }
             )
         }
         composable<ParkingSummaryRoute> {

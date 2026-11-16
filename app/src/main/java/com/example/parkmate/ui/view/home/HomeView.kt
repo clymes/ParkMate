@@ -111,6 +111,13 @@ fun HomeView(
                         onClick = { /*TODO*/ },
                         shape = RectangleShape
                     )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    NavigationDrawerItem(
+                        label = { Text(text = "STATISTICHE") },
+                        selected = false,
+                        onClick = { /*TODO*/ },
+                        shape = RectangleShape
+                    )
                 }
             }
         }

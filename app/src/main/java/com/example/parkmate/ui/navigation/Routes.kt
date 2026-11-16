@@ -26,4 +26,6 @@ object ParkingVehicleRoute
 @Serializable
 object ParkingTypeRoute
 @Serializable
+data class ParkingInfoRoute(val parkingType: String)
+@Serializable
 object ParkingSummaryRoute

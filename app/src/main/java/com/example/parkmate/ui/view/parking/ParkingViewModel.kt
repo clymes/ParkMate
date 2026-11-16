@@ -3,6 +3,7 @@ package com.example.parkmate.ui.view.parking
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.example.parkmate.model.Location
+import com.example.parkmate.model.Parking
 import com.example.parkmate.model.Vehicle
 import com.example.parkmate.ui.view.location.LocationViewModel
 import com.example.parkmate.ui.view.vehicle.VehicleViewModel
@@ -21,6 +22,9 @@ class ParkingViewModel(
     private val _selectedLocation = MutableStateFlow<Location?>(null)
     val selectedLocation: StateFlow<Location?> = _selectedLocation.asStateFlow()
 
+    private val _selectedParking = MutableStateFlow<Parking?>(null)
+    val selectedParking: StateFlow<Parking?> = _selectedParking.asStateFlow()
+
     fun selectVehicle(vehicle: Vehicle) {
         _selectedVehicle.value = vehicle
     }
@@ -29,9 +33,14 @@ class ParkingViewModel(
         _selectedLocation.value = location
     }
 
+    fun selectParking(parking: Parking) {
+        _selectedParking.value = parking
+    }
+
     fun clearSelection() {
         _selectedVehicle.value = null
         _selectedLocation.value = null
+        _selectedParking.value = null
     }
 
     //riprende dal VehicleViewModel
