@@ -10,5 +10,6 @@ data class Location(
     val name: String,
     val lat: Float,
     val long: Float,
-    val address: String
+    val address: String,
+    val isDeleted: Boolean = false,
 )

@@ -65,7 +65,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.parkmate.model.Parking
+import com.example.parkmate.model.ParkingType
 import com.example.parkmate.ui.component.BackButton
 import com.example.parkmate.ui.component.CheckInfoModal
 import java.text.SimpleDateFormat
@@ -80,11 +80,12 @@ private enum class PickerType {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ParkingInfoView(
-    parkingType: String = Parking.FREE.displayName,
+    parkingType: String = ParkingType.FREE.displayName,
     onBackButtonClick: () -> Unit,
     onNextButtonClick: () -> Unit,
+    viewModel: ParkingViewModel
 ) {
-    val parking = Parking.fromString(parkingType)
+    val parking = ParkingType.fromString(parkingType)
     var hourlyRate by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
 
@@ -265,7 +266,14 @@ fun ParkingInfoView(
             }
 
             Button(
-                onClick = onNextButtonClick,
+                onClick = {
+                    viewModel.startTimestamp = selectedStartDate ?: 0L
+                    viewModel.endTimestamp = selectedEndDate
+                    viewModel.hourlyRate = hourlyRate.toDoubleOrNull()
+                    viewModel.notes = note
+                    viewModel.imageUri = selectedImageUri?.toString()
+                    onNextButtonClick()
+                },
                 enabled = isFormValid,
                 modifier = Modifier.fillMaxWidth(),
             ) {
@@ -404,6 +412,7 @@ fun ParkingInfoViewPreview() {
     ParkingInfoView(
         onBackButtonClick = {},
         onNextButtonClick = {},
+        viewModel = ParkingViewModel()
     )
 }
 

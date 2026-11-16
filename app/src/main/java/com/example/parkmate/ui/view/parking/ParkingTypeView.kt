@@ -18,14 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.parkmate.model.Parking
+import com.example.parkmate.model.ParkingType
 import com.example.parkmate.ui.component.BackButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ParkingTypeView(
     onBackButtonClick: () -> Unit,
-    onParkingSelected: (Parking) -> Unit = {},
+    onParkingSelected: (ParkingType) -> Unit = {},
     viewModel: ParkingViewModel = remember { ParkingViewModel() },
 ) {
     Scaffold(
@@ -46,11 +46,11 @@ fun ParkingTypeView(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Parking.entries.forEach { parking ->
+            ParkingType.entries.forEach { parkingType ->
                 Button(
                     onClick = {
-                        viewModel.selectParking(parking)
-                        onParkingSelected(parking)
+                        viewModel.selectParkingType(parkingType)
+                        onParkingSelected(parkingType)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -61,12 +61,12 @@ fun ParkingTypeView(
                         verticalArrangement = Arrangement.Center,
                     ) {
                         Icon(
-                            imageVector = parking.icon,
-                            contentDescription = parking.displayName,
+                            imageVector = parkingType.icon,
+                            contentDescription = parkingType.displayName,
                             modifier = Modifier.padding(bottom = 8.dp),
                         )
                         Text(
-                            text = parking.displayName,
+                            text = parkingType.displayName,
                             style = MaterialTheme.typography.titleMedium,
                         )
                     }

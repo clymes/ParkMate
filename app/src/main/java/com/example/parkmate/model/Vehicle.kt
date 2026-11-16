@@ -10,5 +10,6 @@ data class Vehicle(
     val name: String,
     val type: String,
     val parked: Boolean = false,
-    val plate: String
+    val plate: String,
+    val isDeleted: Boolean = false,
 )

@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.parkmate.ui.component.BackButton
@@ -23,7 +24,10 @@ import com.example.parkmate.ui.component.BackButton
 fun ParkingSummaryView(
     onBackButtonClick: () -> Unit,
     onNextButtonClick: () -> Unit = {},
+    viewModel: ParkingViewModel,
 ) {
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -50,10 +54,14 @@ fun ParkingSummaryView(
             )
 
             Button(
-                onClick = onNextButtonClick,
+                onClick = {
+                    viewModel.saveParking(context) {
+                        onNextButtonClick()
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(text = "procedi")
+                Text(text = "Parcheggia")
             }
         }
     }
@@ -64,5 +72,6 @@ fun ParkingSummaryView(
 fun ParkingSummaryViewPreview() {
     ParkingSummaryView(
         onBackButtonClick = {},
+        viewModel = ParkingViewModel()
     )
 }

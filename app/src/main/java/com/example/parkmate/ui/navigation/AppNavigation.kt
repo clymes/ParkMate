@@ -17,10 +17,13 @@ import com.example.parkmate.ui.view.parking.ParkingVehicleView
 import com.example.parkmate.ui.view.vehicle.VehicleAddView
 import com.example.parkmate.ui.view.vehicle.VehicleDetailView
 import com.example.parkmate.ui.view.vehicle.VehicleListView
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.parkmate.ui.view.parking.ParkingViewModel
 
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
+    val parkingViewModel: ParkingViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -102,6 +105,7 @@ fun AppNavigation() {
                 onBackButtonClick = { navController.popBackStack() },
                 onLocationSelected = { navController.navigate(ParkingVehicleRoute) },
                 onAddLocationClick = { navController.navigate(LocationAddRoute) },
+                viewModel = parkingViewModel
             )
         }
         composable<ParkingVehicleRoute> {
@@ -109,6 +113,7 @@ fun AppNavigation() {
                 onBackButtonClick = { navController.popBackStack() },
                 onVehicleSelected = { navController.navigate(ParkingTypeRoute) },
                 onAddVehicleClick = { navController.navigate(VehicleAddRoute) },
+                viewModel = parkingViewModel
             )
         }
         composable<ParkingTypeRoute> {
@@ -117,6 +122,7 @@ fun AppNavigation() {
                 onParkingSelected = { parking ->
                     navController.navigate(ParkingInfoRoute(parking.displayName))
                 },
+                viewModel = parkingViewModel
             )
         }
         composable<ParkingInfoRoute> { backStackEntry ->
@@ -124,7 +130,8 @@ fun AppNavigation() {
             com.example.parkmate.ui.view.parking.ParkingInfoView(
                 parkingType = route.parkingType,
                 onBackButtonClick = { navController.popBackStack() },
-                onNextButtonClick = { navController.navigate(ParkingSummaryRoute) }
+                onNextButtonClick = { navController.navigate(ParkingSummaryRoute) },
+                viewModel = parkingViewModel
             )
         }
         composable<ParkingSummaryRoute> {
@@ -135,6 +142,7 @@ fun AppNavigation() {
                         popUpTo(HomeRoute) { inclusive = true }
                     }
                 },
+                viewModel = parkingViewModel
             )
         }
     }
