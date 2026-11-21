@@ -77,6 +77,9 @@ class ParkingViewModel(
             viewModelScope.launch {
                 val db = AppDatabase.getInstance(context)
                 db.parkingDao().insertParking(parking)
+                if (parking.isActive()) {
+                    db.vehicleDao().updateParkedStatus(vehicleId, true)
+                }
                 onSuccess()
             }
         }

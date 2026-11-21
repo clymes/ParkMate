@@ -56,10 +56,22 @@ fun VehicleItem(
                     text = vehicle.name,
                     style = MaterialTheme.typography.titleMedium,
                 )
-                Text(
-                    text = vehicle.plate,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = vehicle.plate,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    if (vehicle.parked) {
+                        Text(
+                            text = "Parcheggiato",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                }
             }
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,

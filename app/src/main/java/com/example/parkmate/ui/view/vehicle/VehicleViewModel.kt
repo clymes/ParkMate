@@ -8,6 +8,7 @@ import com.example.parkmate.model.Vehicle
 import com.example.parkmate.model.VehicleType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -61,11 +62,46 @@ class VehicleViewModel : ViewModel() {
 
     fun getAllVehicles(context: Context): Flow<List<Vehicle>> {
         val db = AppDatabase.getInstance(context)
-        return db.vehicleDao().getAllVehicles()
+        return combine(
+            db.vehicleDao().getAllVehicles(),
+            db.parkingDao().getAllParkings()
+        ) { vehicles, parkings ->
+            val currentTime = System.currentTimeMillis()
+            val activeVehicleIds = parkings
+                .filter { it.isActive(currentTime) }
+                .map { it.vehicleId }
+                .toSet()
+
+            vehicles.map { vehicle ->
+                val isParked = vehicle.id in activeVehicleIds
+                if (vehicle.parked != isParked) {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        db.vehicleDao().updateParkedStatus(vehicle.id, isParked)
+                    }
+                }
+                vehicle.copy(parked = isParked)
+            }
+        }
     }
 
     fun getVehicleById(context: Context, vehicleId: Int): Flow<Vehicle?> {
         val db = AppDatabase.getInstance(context)
-        return db.vehicleDao().getVehicleById(vehicleId)
+        return combine(
+            db.vehicleDao().getVehicleById(vehicleId),
+            db.parkingDao().getAllParkings()
+        ) { vehicle, parkings ->
+            if (vehicle == null) {
+                null
+            } else {
+                val currentTime = System.currentTimeMillis()
+                val isParked = parkings.any { it.vehicleId == vehicle.id && it.isActive(currentTime) }
+                if (vehicle.parked != isParked) {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        db.vehicleDao().updateParkedStatus(vehicle.id, isParked)
+                    }
+                }
+                vehicle.copy(parked = isParked)
+            }
+        }
     }
 }

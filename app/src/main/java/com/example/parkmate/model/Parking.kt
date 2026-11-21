@@ -15,4 +15,10 @@ data class Parking(
     val hourlyRate: Double?,
     val notes: String,
     val imageUri: String?
-)
+) {
+    fun isActive(currentTime: Long = System.currentTimeMillis()): Boolean {
+        val startValid = startTimestamp <= currentTime
+        val endValid = (endTimestamp == null) || (endTimestamp > currentTime)
+        return startValid && endValid
+    }
+}
