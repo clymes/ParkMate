@@ -209,6 +209,12 @@ fun ParkingInfoView(
                     maxLines = 5
                 )
 
+                Text(
+                    text = "Foto (opzionale)",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
                 SliderCarousel(
                     items = selectedImageBitmaps,
                     itemQuantity = 5,
@@ -230,7 +236,7 @@ fun ParkingInfoView(
                     viewModel.endTimestamp = selectedEndDate
                     viewModel.hourlyRate = hourlyRate.toDoubleOrNull()
                     viewModel.notes = note
-                    viewModel.imageUri = selectedImageUris.firstOrNull()?.toString()
+                    viewModel.imageUris = selectedImageUris.map { it.toString() }
                     onNextButtonClick()
                 },
                 enabled = isFormValid,

@@ -22,6 +22,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.parkmate.ui.component.BackButton
+import android.graphics.ImageDecoder
+import android.net.Uri
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import com.example.parkmate.ui.component.ExpandableImage
+import com.example.parkmate.ui.component.SliderCarousel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -92,6 +103,23 @@ fun ParkingSummaryView(
         parkingTypeStr = "N/A"
     }
 
+    var selectedImageBitmaps by remember { mutableStateOf<List<ImageBitmap>>(emptyList()) }
+
+    LaunchedEffect(viewModel.imageUris) {
+        val bitmaps = mutableListOf<ImageBitmap>()
+        for (uriString in viewModel.imageUris) {
+            try {
+                val uri = Uri.parse(uriString)
+                val source = ImageDecoder.createSource(context.contentResolver, uri)
+                val bitmap = ImageDecoder.decodeBitmap(source)
+                bitmaps.add(bitmap.asImageBitmap())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        selectedImageBitmaps = bitmaps
+    }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -124,6 +152,29 @@ fun ParkingSummaryView(
                 SummaryItem(label = "Data fine", value = endDateStr)
                 SummaryItem(label = "Tariffa oraria", value = rateStr)
                 SummaryItem(label = "Note", value = notesStr)
+
+                if (selectedImageBitmaps.isNotEmpty()) {
+                    Text(
+                        text = "Foto",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)
+                    )
+
+                    SliderCarousel(
+                        items = selectedImageBitmaps,
+                        itemQuantity = 5,
+                        showAddButton = false,
+                        modifier = Modifier.fillMaxWidth()
+                    ) { bitmap ->
+                        ExpandableImage(
+                            bitmap = bitmap,
+                            contentDescription = "Foto salvata",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
             }
 
             Button(

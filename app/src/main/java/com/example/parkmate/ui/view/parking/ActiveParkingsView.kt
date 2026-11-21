@@ -28,6 +28,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.parkmate.ui.component.BackButton
 import com.example.parkmate.ui.component.ItemCarousel
 import com.example.parkmate.ui.view.home.HomeViewModel
+import android.graphics.ImageDecoder
+import androidx.core.net.toUri
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import com.example.parkmate.ui.component.ExpandableImage
+import com.example.parkmate.ui.component.SliderCarousel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -145,6 +155,8 @@ fun ActiveParkingsView(
                                 SummaryItem(label = "Data fine", value = endDateStr)
                                 SummaryItem(label = "Tariffa oraria", value = rateStr)
                                 SummaryItem(label = "Note", value = notesStr)
+                                
+                                ParkingImages(imageUriString = parking.imageUri)
                             }
 
                             Spacer(modifier = Modifier.height(16.dp))
@@ -162,5 +174,59 @@ fun ActiveParkingsView(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ParkingImages(imageUriString: String?) {
+    if (imageUriString.isNullOrBlank()) {
+        SummaryItem(label = "Foto", value = "Nessuna")
+        return
+    }
+
+    val context = LocalContext.current
+    var selectedImageBitmaps by remember { mutableStateOf<List<ImageBitmap>>(emptyList()) }
+
+    LaunchedEffect(imageUriString) {
+        val bitmaps = mutableListOf<ImageBitmap>()
+        val uris = imageUriString.split(",")
+        for (uriString in uris) {
+            if (uriString.isNotBlank()) {
+                try {
+                    val uri = uriString.trim().toUri()
+                    val source = ImageDecoder.createSource(context.contentResolver, uri)
+                    val bitmap = ImageDecoder.decodeBitmap(source)
+                    bitmaps.add(bitmap.asImageBitmap())
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+        selectedImageBitmaps = bitmaps
+    }
+
+    if (selectedImageBitmaps.isNotEmpty()) {
+        Text(
+            text = "Foto",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)
+        )
+
+        SliderCarousel(
+            items = selectedImageBitmaps,
+            itemQuantity = 5,
+            showAddButton = false,
+            modifier = Modifier.fillMaxWidth()
+        ) { bitmap ->
+            ExpandableImage(
+                bitmap = bitmap,
+                contentDescription = "Foto salvata",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    } else {
+        SummaryItem(label = "Foto", value = "Nessuna")
     }
 }

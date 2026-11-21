@@ -33,7 +33,7 @@ class ParkingViewModel(
     var endTimestamp: Long? = null
     var hourlyRate: Double? = null
     var notes: String = ""
-    var imageUri: String? = null
+    var imageUris: List<String> = emptyList()
 
     fun selectVehicle(vehicle: Vehicle) {
         _selectedVehicle.value = vehicle
@@ -55,7 +55,7 @@ class ParkingViewModel(
         endTimestamp = null
         hourlyRate = null
         notes = ""
-        imageUri = null
+        imageUris = emptyList()
     }
 
     fun saveParking(context: Context, onSuccess: () -> Unit) {
@@ -72,7 +72,7 @@ class ParkingViewModel(
                 endTimestamp = endTimestamp,
                 hourlyRate = hourlyRate,
                 notes = notes,
-                imageUri = imageUri
+                imageUri = imageUris.joinToString(",").takeIf { it.isNotEmpty() }
             )
             viewModelScope.launch {
                 val db = AppDatabase.getInstance(context)

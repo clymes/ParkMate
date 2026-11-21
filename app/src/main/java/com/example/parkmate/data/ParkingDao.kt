@@ -17,4 +17,7 @@ interface ParkingDao {
 
     @Query("SELECT * FROM parkings")
     fun getAllParkings(): Flow<List<Parking>>
+
+    @Query("SELECT * FROM parkings WHERE id = :id")
+    fun getParkingById(id: Int): Flow<Parking?>
 }
