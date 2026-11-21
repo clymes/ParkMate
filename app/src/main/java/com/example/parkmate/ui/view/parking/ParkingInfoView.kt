@@ -5,14 +5,11 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,7 +20,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.PhotoLibrary
@@ -52,13 +48,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -68,6 +59,8 @@ import androidx.compose.ui.unit.dp
 import com.example.parkmate.model.ParkingType
 import com.example.parkmate.ui.component.BackButton
 import com.example.parkmate.ui.component.CheckInfoModal
+import com.example.parkmate.ui.component.ExpandableImage
+import com.example.parkmate.ui.component.SliderCarousel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -89,7 +82,6 @@ fun ParkingInfoView(
     var hourlyRate by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
 
-    // Pre-compilato con data e ora correnti
     val now = Calendar.getInstance()
     var selectedStartDate by remember { mutableStateOf<Long?>(now.timeInMillis) }
     var selectedStartTime by remember { mutableStateOf<Pair<Int, Int>?>(Pair(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE))) }
@@ -98,12 +90,12 @@ fun ParkingInfoView(
     var selectedEndTime by remember { mutableStateOf<Pair<Int, Int>?>(null) }
 
     // galleria foto
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var selectedImageUris by remember { mutableStateOf<List<Uri>>(emptyList()) }
     val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri: Uri? ->
-        if (uri != null) {
-            selectedImageUri = uri
+        contract = ActivityResultContracts.PickMultipleVisualMedia(5)
+    ) { uris: List<Uri> ->
+        if (uris.isNotEmpty()) {
+            selectedImageUris = (selectedImageUris + uris).distinct().take(5)
         }
     }
 
@@ -111,18 +103,20 @@ fun ParkingInfoView(
     var showPhotoModal by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-    var selectedImageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+    var selectedImageBitmaps by remember { mutableStateOf<List<ImageBitmap>>(emptyList()) }
 
-    LaunchedEffect(selectedImageUri) {
-        selectedImageUri?.let { uri ->
+    LaunchedEffect(selectedImageUris) {
+        val bitmaps = mutableListOf<ImageBitmap>()
+        for (uri in selectedImageUris) {
             try {
                 val source = ImageDecoder.createSource(context.contentResolver, uri)
                 val bitmap = ImageDecoder.decodeBitmap(source)
-                selectedImageBitmap = bitmap.asImageBitmap()
+                bitmaps.add(bitmap.asImageBitmap())
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
+        selectedImageBitmaps = bitmaps
     }
 
     val startDateTimeText = formatDateTime(selectedStartDate, selectedStartTime)
@@ -185,7 +179,6 @@ fun ParkingInfoView(
                     )
                 }
 
-                // Scadenza (Data e Ora): Obbligatorio per FIXED, opzionale per FREE e HOURLY
                 val isEndTimeRequired = parking.requiresEndTime
                 var endTimeLabel = "Scadenza (Data e Ora) (opzionale)"
                 if (isEndTimeRequired) {
@@ -216,52 +209,18 @@ fun ParkingInfoView(
                     maxLines = 5
                 )
 
-                val dashColor = MaterialTheme.colorScheme.outline
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
-                        .clip(RoundedCornerShape(12.dp))
-                        .clickable { showPhotoModal = true }
-                        .drawBehind {
-                            if (selectedImageBitmap == null) {
-                                drawRoundRect(
-                                    color = dashColor,
-                                    style = Stroke(
-                                        width = 2.dp.toPx(),
-                                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 20f), 0f)
-                                    ),
-                                    cornerRadius = CornerRadius(12.dp.toPx())
-                                )
-                            }
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (selectedImageBitmap != null) {
-                        Image(
-                            bitmap = selectedImageBitmap!!,
-                            contentDescription = "Foto selezionata",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    } else {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.AddAPhoto,
-                                contentDescription = "Aggiungi foto",
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "Aggiungi foto",
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
-                    }
+                SliderCarousel(
+                    items = selectedImageBitmaps,
+                    itemQuantity = 5,
+                    onAddClick = { showPhotoModal = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) { bitmap ->
+                    ExpandableImage(
+                        bitmap = bitmap,
+                        contentDescription = "Foto selezionata",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
             }
 
@@ -271,7 +230,7 @@ fun ParkingInfoView(
                     viewModel.endTimestamp = selectedEndDate
                     viewModel.hourlyRate = hourlyRate.toDoubleOrNull()
                     viewModel.notes = note
-                    viewModel.imageUri = selectedImageUri?.toString()
+                    viewModel.imageUri = selectedImageUris.firstOrNull()?.toString()
                     onNextButtonClick()
                 },
                 enabled = isFormValid,
@@ -399,7 +358,9 @@ fun ParkingInfoView(
 }
 
 private fun formatDateTime(dateMillis: Long?, time: Pair<Int, Int>?): String {
-    if (dateMillis == null || time == null) return ""
+    if (dateMillis == null || time == null) {
+        return ""
+    }
     val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     val dateString = sdf.format(Date(dateMillis))
     val timeString = String.format(Locale.getDefault(), "%02d:%02d", time.first, time.second)
