@@ -21,10 +21,12 @@ import com.example.parkmate.ui.component.BackButton
 fun LocationListView(
     onBackButtonClick: () -> Unit,
     goToLocationAddView: () -> Unit,
+    goToLocationDetailView: (Int) -> Unit,
     viewModel: LocationViewModel = remember { LocationViewModel() },
 ) {
     val context = LocalContext.current
     val locationList by viewModel.getAllLocations(context).collectAsState(initial = emptyList())
+    val existingLocationList = locationList.filter { !it.isDeleted }
 
     Scaffold(
         topBar = {
@@ -44,7 +46,7 @@ fun LocationListView(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if (locationList.isEmpty()) {
+            if (existingLocationList.isEmpty()) {
                 Box(
                     modifier = Modifier.weight(1f),
                     contentAlignment = Alignment.Center,
@@ -63,13 +65,13 @@ fun LocationListView(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(
-                        items = locationList,
+                        items = existingLocationList,
                         key = { location -> location.id },
                     ) { location ->
                         LocationItem(
                             location = location,
                             onLocationClick = {
-                                // TODO: Implementare navigazione al dettaglio della posizione
+                                goToLocationDetailView(location.id)
                             },
                         )
                     }
@@ -94,5 +96,6 @@ fun LocationListViewPreview() {
     LocationListView(
         onBackButtonClick = {},
         goToLocationAddView = {},
+        goToLocationDetailView = {},
     )
 }

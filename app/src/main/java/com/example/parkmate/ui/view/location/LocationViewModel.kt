@@ -41,4 +41,38 @@ class LocationViewModel: ViewModel() {
             )
         }
     }
+
+    fun getLocationById(context: Context, id: Int): Flow<Location?> {
+        val db = AppDatabase.getInstance(context)
+        return db.locationDao().getLocationById(id)
+    }
+
+    fun softdeleteLocation(context: Context, id: Int) {
+        val db = AppDatabase.getInstance(context)
+        viewModelScope.launch {
+            db.locationDao().softDeleteLocation(id)
+        }
+    }
+
+    fun updateLocation(
+        context: Context,
+        id: Int,
+        name: String,
+        lat: Float,
+        long: Float,
+        address: String
+    ) {
+        val db = AppDatabase.getInstance(context)
+        viewModelScope.launch {
+            db.locationDao().updateLocation(
+                Location(
+                    id = id,
+                    name = name,
+                    lat = lat,
+                    long = long,
+                    address = address
+                )
+            )
+        }
+    }
 }

@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.parkmate.ui.view.home.HomeView
 import com.example.parkmate.ui.view.location.LocationAddView
+import com.example.parkmate.ui.view.location.LocationDetailView
 import com.example.parkmate.ui.view.location.LocationListView
 import com.example.parkmate.ui.view.parking.ActiveParkingsView
 import com.example.parkmate.ui.view.parking.ParkingLocationView
@@ -98,12 +99,22 @@ fun AppNavigation() {
             LocationListView(
                 onBackButtonClick = { navController.popBackStack() },
                 goToLocationAddView = { navController.navigate(LocationAddRoute) },
+                goToLocationDetailView = { locationId ->
+                    navController.navigate(LocationDetailRoute(locationId))
+                },
             )
         }
         composable<LocationAddRoute> {
             LocationAddView(
                 onBackButtonClick = { navController.popBackStack() },
                 onSuccessfulAdd = { navController.popBackStack() }
+            )
+        }
+        composable<LocationDetailRoute> { backStackEntry ->
+            val route: LocationDetailRoute = backStackEntry.toRoute()
+            LocationDetailView(
+                locationId = route.locationId,
+                onBackButtonClick = { navController.popBackStack() },
             )
         }
 

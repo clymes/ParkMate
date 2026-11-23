@@ -17,6 +17,8 @@ data class VehicleDetailRoute(val vehicleId: Int)
 object LocationListRoute
 @Serializable
 object LocationAddRoute
+@Serializable
+data class LocationDetailRoute(val locationId: Int)
 
 //PARCHEGGIO
 @Serializable

@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.example.parkmate.model.Location
 import org.maplibre.compose.camera.CameraUpdate
 import org.maplibre.compose.expressions.dsl.const
+import org.maplibre.compose.interaction.MapInteractions
 import org.maplibre.compose.layers.CircleLayer
 import org.maplibre.compose.layers.LocationIndicatorLayer
 import org.maplibre.compose.location.LocationTrackingEffect
@@ -38,6 +39,7 @@ fun MapLibre(
     modifier: Modifier = Modifier,
     mapState: MapState,
     showCenterPin: Boolean = false,
+    interactions: MapInteractions = MapInteractions.Standard
 ) {
     Box(
         modifier = modifier
@@ -47,6 +49,7 @@ fun MapLibre(
         MaplibreMap(
             modifier = Modifier.fillMaxSize(),
             state = mapState,
+            interactions = interactions,
             overlay = {}
         )
 
