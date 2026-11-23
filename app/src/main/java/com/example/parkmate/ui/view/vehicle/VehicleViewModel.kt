@@ -60,6 +60,39 @@ class VehicleViewModel : ViewModel() {
         }
     }
 
+    fun updateVehicle(
+        context: Context,
+        vehicle: Vehicle,
+        name: String,
+        type: VehicleType?,
+        plate: String,
+        onError: (String) -> Unit,
+        onSuccess: (String) -> Unit,
+    ) {
+        val typeString = vehicleTypeToString(type)
+        val errorMessage = validateVehicle(name, typeString, plate)
+        val successMessage = "Veicolo modificato con successo"
+
+        if (errorMessage != null) {
+            onError(errorMessage)
+            return
+        }
+
+        val db = AppDatabase.getInstance(context)
+        viewModelScope.launch(Dispatchers.IO) {
+            db.vehicleDao().updateVehicle(
+                vehicle.copy(
+                    name = name.trim(),
+                    type = typeString,
+                    plate = plate.trim(),
+                )
+            )
+            withContext(Dispatchers.Main) {
+                onSuccess(successMessage)
+            }
+        }
+    }
+
     fun getAllVehicles(context: Context): Flow<List<Vehicle>> {
         val db = AppDatabase.getInstance(context)
         return combine(
@@ -101,6 +134,16 @@ class VehicleViewModel : ViewModel() {
                     }
                 }
                 vehicle.copy(parked = isParked)
+            }
+        }
+    }
+
+    fun softdeleteVehicle(context: Context, vehicleId: Int, onSuccess: () -> Unit) {
+        val db = AppDatabase.getInstance(context)
+        viewModelScope.launch(Dispatchers.IO) {
+            db.vehicleDao().softDeleteVehicle(vehicleId)
+            withContext(Dispatchers.Main) {
+                onSuccess()
             }
         }
     }

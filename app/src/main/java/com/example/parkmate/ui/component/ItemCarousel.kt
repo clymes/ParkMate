@@ -13,6 +13,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -21,11 +22,29 @@ import androidx.compose.ui.unit.dp
 fun <T> ItemCarousel(
     items: List<T>,
     modifier: Modifier = Modifier,
+    initialPage: Int = 0,
     content: @Composable (T) -> Unit
 ) {
-    if (items.isEmpty()) return
+    if (items.isEmpty()) {
+        return
+    }
 
-    val pagerState = rememberPagerState(pageCount = { items.size })
+    val targetPage = if (initialPage >= 0 && initialPage < items.size) {
+        initialPage
+    } else {
+        0
+    }
+
+    val pagerState = rememberPagerState(
+        initialPage = targetPage,
+        pageCount = { items.size }
+    )
+
+    LaunchedEffect(targetPage) {
+        if (pagerState.currentPage != targetPage) {
+            pagerState.scrollToPage(targetPage)
+        }
+    }
 
     Column(modifier = modifier) {
         // Slider

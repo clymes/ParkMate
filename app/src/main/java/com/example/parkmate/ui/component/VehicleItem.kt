@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import com.example.parkmate.model.Vehicle
 import com.example.parkmate.model.VehicleType
@@ -24,18 +25,22 @@ import com.example.parkmate.model.VehicleType
 @Composable
 fun VehicleItem(
     vehicle: Vehicle,
+    enabled: Boolean = true,
     onVehicleDetailClick: () -> Unit,
 ) {
     val vehicleType = VehicleType.fromString(vehicle.type)
 
     Button(
         onClick = onVehicleDetailClick,
-        modifier = Modifier.fillMaxWidth(),
+        enabled = enabled,
+        modifier = Modifier.fillMaxWidth().alpha(if (enabled) 1f else 0.5f),
         contentPadding = PaddingValues(12.dp),
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
         ),
     ) {
         Row(

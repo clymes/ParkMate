@@ -26,6 +26,7 @@ fun VehicleListView(
 ) {
     val context = LocalContext.current
     val vehicleList by viewModel.getAllVehicles(context).collectAsState(initial = emptyList())
+    val existingVehicleList = vehicleList.filter { !it.isDeleted }
 
     Scaffold(
         topBar = {
@@ -45,7 +46,7 @@ fun VehicleListView(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if (vehicleList.isEmpty()) {
+            if (existingVehicleList.isEmpty()) {
                 Box(
                     modifier = Modifier.weight(1f),
                     contentAlignment = Alignment.Center,
@@ -64,7 +65,7 @@ fun VehicleListView(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(
-                        items = vehicleList,
+                        items = existingVehicleList,
                         key = { vehicle -> vehicle.id },
                     ) { vehicle ->
                         VehicleItem(

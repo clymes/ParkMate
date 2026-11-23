@@ -19,6 +19,9 @@ interface VehicleDao {
     @Query("UPDATE vehicles SET parked = :parked WHERE id = :id")
     suspend fun updateParkedStatus(id: Int, parked: Boolean)
 
+    @Query("UPDATE vehicles SET isDeleted = 1 WHERE id = :id")
+    suspend fun softDeleteVehicle(id: Int)
+
     @Query("SELECT * FROM vehicles")
     fun getAllVehicles(): Flow<List<Vehicle>>
 

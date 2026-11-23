@@ -1,8 +1,11 @@
 package com.example.parkmate.ui.view.vehicle
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.parkmate.model.VehicleType
 import com.example.parkmate.ui.component.BackButton
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,6 +26,44 @@ fun VehicleDetailView(
 ) {
     val context = LocalContext.current
     val vehicle by viewModel.getVehicleById(context, vehicleId).collectAsState(initial = null)
+    
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var showEditBottomSheet by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    if (showDeleteDialog && vehicle != null) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = {
+                Text(text = "Sei sicuro?")
+            },
+            text = {
+                Text(text = "Sei sicuro di voler eliminare il veicolo ${vehicle!!.name}? Quest'azione è irreversibile")
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Indietro")
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDeleteDialog = false
+                        viewModel.softdeleteVehicle(context, vehicle!!.id) {
+                            onBackButtonClick()
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError
+                    )
+                ) {
+                    Text("Elimina")
+                }
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -30,6 +72,17 @@ fun VehicleDetailView(
                 navigationIcon = {
                     BackButton(onBackButtonClick = onBackButtonClick)
                 },
+                actions = {
+                    if (vehicle != null) {
+                        IconButton(onClick = { showDeleteDialog = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Elimina veicolo",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+                }
             )
         },
     ) { innerPadding ->
@@ -112,6 +165,21 @@ fun VehicleDetailView(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                 ) {
                                     Text(
+                                        text = "Nome",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                    Text(
+                                        text = currentVehicle.name,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                    )
+                                }
+                                HorizontalDivider()
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                ) {
+                                    Text(
                                         text = "Targa",
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -127,7 +195,22 @@ fun VehicleDetailView(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                 ) {
                                     Text(
-                                        text = "Stato parcheggio",
+                                        text = "Categoria",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                    Text(
+                                        text = vehicleType.displayName,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                    )
+                                }
+                                HorizontalDivider()
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                ) {
+                                    Text(
+                                        text = "Stato",
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
@@ -145,11 +228,135 @@ fun VehicleDetailView(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            OutlinedButton(
+                onClick = { showEditBottomSheet = true },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(text = "Modifica")
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             Button(
                 onClick = { /* TODO */ },
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(text = "Parcheggia")
+            }
+        }
+    }
+
+    if (showEditBottomSheet && vehicle != null) {
+        var editName by remember(vehicle) { mutableStateOf(vehicle!!.name) }
+        var editSelectedType by remember(vehicle) { mutableStateOf(VehicleType.fromString(vehicle!!.type)) }
+        var isEditTypeDropdownExpanded by remember { mutableStateOf(false) }
+        var editPlate by remember(vehicle) { mutableStateOf(vehicle!!.plate) }
+
+        ModalBottomSheet(
+            onDismissRequest = { showEditBottomSheet = false },
+            sheetState = sheetState
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Text(
+                    text = "Modifica Veicolo",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                OutlinedTextField(
+                    value = editName,
+                    onValueChange = { editName = it },
+                    label = { Text("Nome veicolo") },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                ExposedDropdownMenuBox(
+                    expanded = isEditTypeDropdownExpanded,
+                    onExpandedChange = { isEditTypeDropdownExpanded = !isEditTypeDropdownExpanded },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    OutlinedTextField(
+                        value = editSelectedType.displayName,
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Tipo veicolo") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = editSelectedType.icon,
+                                contentDescription = editSelectedType.displayName
+                            )
+                        },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = isEditTypeDropdownExpanded)
+                        },
+                        colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                        modifier = Modifier
+                            .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                            .fillMaxWidth(),
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = isEditTypeDropdownExpanded,
+                        onDismissRequest = { isEditTypeDropdownExpanded = false },
+                    ) {
+                        VehicleType.entries.forEach { vehicleType ->
+                            DropdownMenuItem(
+                                text = { Text(vehicleType.displayName) },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = vehicleType.icon,
+                                        contentDescription = vehicleType.displayName,
+                                    )
+                                },
+                                onClick = {
+                                    editSelectedType = vehicleType
+                                    isEditTypeDropdownExpanded = false
+                                },
+                            )
+                        }
+                    }
+                }
+
+                OutlinedTextField(
+                    value = editPlate,
+                    onValueChange = { editPlate = it },
+                    label = { Text("Targa") },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(
+                    onClick = {
+                        viewModel.updateVehicle(
+                            context = context,
+                            vehicle = vehicle!!,
+                            name = editName,
+                            type = editSelectedType,
+                            plate = editPlate,
+                            onError = { errorMessage ->
+                                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                            },
+                            onSuccess = { successMessage ->
+                                Toast.makeText(context, successMessage, Toast.LENGTH_SHORT).show()
+                                scope.launch {
+                                    sheetState.hide()
+                                    showEditBottomSheet = false
+                                }
+                            }
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text("Modifica")
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
