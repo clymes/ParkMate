@@ -11,15 +11,15 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.parkmate.model.Location
 import org.maplibre.compose.camera.CameraUpdate
+import org.maplibre.compose.expressions.dsl.const
+import org.maplibre.compose.layers.CircleLayer
 import org.maplibre.compose.layers.LocationIndicatorLayer
 import org.maplibre.compose.location.LocationTrackingEffect
 import org.maplibre.compose.location.rememberDefaultHeadingProvider
@@ -29,12 +29,14 @@ import org.maplibre.compose.map.LocalMapState
 import org.maplibre.compose.map.MapState
 import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.map.rememberMapState
+import org.maplibre.compose.sources.GeoJsonData
+import org.maplibre.compose.sources.rememberGeoJsonSource
 import org.maplibre.compose.style.BaseStyle
 
 @Composable
 fun MapLibre(
     modifier: Modifier = Modifier,
-    mapState: MapState = getMapState(),
+    mapState: MapState,
     showCenterPin: Boolean = false,
 ) {
     Box(
@@ -64,7 +66,8 @@ fun MapLibre(
 
 @Composable
 fun getMapState(
-    isTracking: Boolean = true
+    isTracking: Boolean = true,
+    activeParkings: List<Location> = emptyList()
 ): MapState {
     val locationProvider = rememberDefaultLocationProvider()
     val headingProvider = rememberDefaultHeadingProvider()
@@ -78,6 +81,35 @@ fun getMapState(
         baseStyle = BaseStyle.Uri("https://tiles.openfreemap.org/styles/bright"),
     ) {
         val currentMapState = checkNotNull(LocalMapState.current)
+
+        // parcheggi attivi
+        if (activeParkings.isNotEmpty()) {
+            val featuresJson = activeParkings.joinToString(",") { loc ->
+                """
+                {
+                  "type": "Feature",
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": [${loc.long}, ${loc.lat}]
+                  }
+                }
+                """.trimIndent()
+            }
+            val geoJson = """{"type":"FeatureCollection","features":[$featuresJson]}"""
+
+            val source = rememberGeoJsonSource(
+                data = GeoJsonData.JsonString(geoJson)
+            )
+
+            CircleLayer(
+                id = "active_parkings_layer",
+                source = source,
+                color = const(Color.Red),
+                radius = const(8.dp),
+                strokeColor = const(Color.White),
+                strokeWidth = const(2.dp)
+            )
+        }
 
         LocationIndicatorLayer(
             id = "user",

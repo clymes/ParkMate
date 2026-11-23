@@ -51,7 +51,11 @@ fun HomeView(
     viewModel: HomeViewModel = viewModel(),
 ) {
     val context = LocalContext.current
-    val activeParkings by viewModel.getActiveParkings(context).collectAsState(initial = emptyList())
+    val activeParkingList by viewModel.getActiveParkings(context).collectAsState(initial = emptyList())
+
+    val locations by viewModel.getAllLocations(context).collectAsState(initial = emptyList())
+    val activeParkingLocations = locations.filter { location -> activeParkingList.any { it.locationId == location.id } }
+    
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -166,11 +170,12 @@ fun HomeView(
             ) {
                 MapLibre(
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(1f),
+                    mapState = com.example.parkmate.ui.component.getMapState(activeParkings = activeParkingLocations)
                 )
 
-                if (activeParkings.isNotEmpty()) {
-                    val count = activeParkings.size
+                if (activeParkingList.isNotEmpty()) {
+                    val count = activeParkingList.size
                     val text = if (count == 1) "1 parcheggio" else "$count parcheggi"
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
